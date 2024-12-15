@@ -18,7 +18,7 @@ function CustomCounter() {
         const headers = new Headers();
         headers.append("Content-Type", "application/json");
 
-        const response = await fetch("http://localhost:3031/api/openai", {
+        const response = await fetch("http://localhost:3030/openai", {
           method: "PUT",
           body: JSON.stringify({ "openai-question": message }),
           headers: headers,

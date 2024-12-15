@@ -28,10 +28,11 @@ export default function Login() {
           password: enteredPassword,
         };
 
-        const baseURL = new URL("http://localhost:3031/api");
+        // const baseURL = new URL("http://localhost:3031/api");
 
         try {
-          const response = await fetch("http://localhost:3031/api/login", {
+            // Make a request to login API endpoint
+          const response = await fetch("http://localhost:3030/login", {
             method: "POST",
             body: JSON.stringify(authData),
             headers: {
