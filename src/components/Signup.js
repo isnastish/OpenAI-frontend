@@ -1,6 +1,6 @@
 import { Fragment, useState } from "react";
 
-async function signupRequest({ firstName, lastName, email, password }) {
+async function signupRequest(firstName, lastName, email, password) {
   const userData = {
     first_name: firstName,
     last_name: lastName,
@@ -14,13 +14,25 @@ async function signupRequest({ firstName, lastName, email, password }) {
       body: JSON.stringify(userData),
       headers: {
         "Content-Type": "application/json",
-        "X-Forwarded-For": "34.130.107.20", // Canada IP address.
+        "X-Forwarded-For": "34.130.107.20", // Canada IP address (used for testing only, so that retrieve geolocation data will succeed).
       },
       credentials: "include",
     });
 
+    if (!resp.ok) {
+      if (resp.status === 500) {
+        throw new Error(await resp.text());
+      }
 
-  } catch (error) {}
+      throw new Error(resp.status);
+    }
+  } catch (error) {
+    // NOTE: This is not how errors should be handled, 
+    // Ideally we should set a state and display an error message 
+    // that a user with the specified email address already exists.
+    // But I don't know how to propagate data between functions in react.
+    console.error(error);
+  }
 }
 
 function Input() {
@@ -76,12 +88,12 @@ export default function Signup() {
         enteredFirstName,
         enteredLastName,
         enteredEmail,
-        enteredPassword
+        enteredPassword,
       );
     }
 
-    // TODO: Here we have to redirect to /openai page.
-    // So we can make requests to Openai model
+    // TODO: We should redirect to a /login page.
+    // Let's omit sending the confirmation email.
 
     clearSubmittedDataHandler();
   }
