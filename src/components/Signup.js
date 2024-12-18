@@ -40,7 +40,7 @@ async function signupRequest(firstName, lastName, email, password) {
   }
 }
 
-export default function Signup() {
+export default function Signup({ signupStateUpdateHandler }) {
   const [enteredEmail, setEnteredEmail] = useState("");
   const [enteredPassword, setEnteredPassword] = useState("");
   const [enteredFirstName, setEnteredFirstName] = useState("");
@@ -77,13 +77,16 @@ export default function Signup() {
         enteredEmail,
         enteredPassword
       );
+
+      // NOTE: This only should be invoked when the 
+      // signup process was successfull, we didn't throw any errors.
+      // So, it should be moved inside signupRequest function.
+      signupStateUpdateHandler();
     }
 
     // TODO: We should redirect to a /login page.
     // Let's omit sending the confirmation email.
     // That should be done somehow with a react router.
-
-    clearSubmittedDataHandler();
   }
 
   return (
@@ -118,6 +121,9 @@ export default function Signup() {
         </div>
         <p className="form-actions">
           <button className="button">SignUp</button>
+          <button className="button" onClick={clearSubmittedDataHandler}>
+            Reset
+          </button>
         </p>
       </form>
     </Fragment>

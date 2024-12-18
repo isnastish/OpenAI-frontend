@@ -38,16 +38,23 @@ export default function App() {
   const [signupState, setSignupState] = useState(true);
 
   const signupStateUpdateHandler = () => {
-    if (!signupState) {
+    console.log("signupStateUpdateHandler() was invoked, signupState: " + signupState);
+    if (signupState) {
       // Switch to login state.
-      setSignupState(true);
+      setSignupState(false);
       return;
     }
-  }
+  };
 
   return (
     <Fragment>
-      <div className="App">{signupState ? <Signup></Signup> : <Login />}</div>
+      <div className="App">
+        {signupState ? (
+          <Signup signupStateUpdateHandler={signupStateUpdateHandler}></Signup>
+        ) : (
+          <Login />
+        )}
+      </div>
     </Fragment>
   );
 }
