@@ -1,6 +1,10 @@
 import { Fragment, useState } from "react";
-import { validateEmailAddress } from "../utils/validation";
 import Error from "./Error";
+
+async function makeLoginRequest(userEmail, userPassword) {
+  // NOTE: How do we set jwtAccessToken back? 
+  // As a return value?
+} 
 
 export default function Login() {
   const [enteredEmail, setEnteredEmail] = useState("");
@@ -12,15 +16,6 @@ export default function Login() {
     event.preventDefault();
 
     if (enteredEmail !== "" && enteredPassword !== "") {
-      if (!validateEmailAddress(enteredEmail)) {
-        setInvalidInputError(`Invalid email address ${enteredEmail}`);
-        return;
-      }
-
-      // if (!validatePassword(enteredPassword)) {
-      //     setInvalidInputError(`Password validation failed ${enteredPassword}`)
-      //     return;
-      // }
 
       async function authorize() {
         const authData = {

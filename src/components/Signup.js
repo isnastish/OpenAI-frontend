@@ -26,17 +26,36 @@ async function signupRequest(firstName, lastName, email, password) {
 
       throw new Error(resp.status);
     }
+
+    // TODO: Redirect to /login page.
+    // And once the user is logen in, we should validate its data
+    // against the database. Important that the password should be salted.
   } catch (error) {
-    // NOTE: This is not how errors should be handled, 
-    // Ideally we should set a state and display an error message 
+    // NOTE: This is not how errors should be handled,
+    // Ideally we should set a state and display an error message
     // that a user with the specified email address already exists.
     // But I don't know how to propagate data between functions in react.
     console.error(error);
   }
 }
 
-function Input() {
-  return <Fragment></Fragment>;
+function UserInput(title, text, onSubmitHandler, inputValue) {
+  if (typeof onSubmitHandler !== "function") {
+    throw new Error("invalid type for submit handler");
+  }
+
+  return (
+    <div className="control no-margin">
+      <label htmlFor={title}>{text}</label>
+      <input
+        id={title}
+        type={title}
+        name={title}
+        onChange={onSubmitHandler}
+        value={inputValue}
+      ></input>
+    </div>
+  );
 }
 
 export default function Signup() {
@@ -70,30 +89,17 @@ export default function Signup() {
       enteredFirstName !== "" &&
       enteredLastName !== ""
     ) {
-      console.log(
-        "submitted email: " +
-          enteredEmail +
-          "\npassword: " +
-          enteredPassword +
-          "\nfirstName: " +
-          enteredFirstName +
-          "\nlastName: " +
-          enteredLastName
-      );
-
-      // TODO: Password and email address validation.
-      // Although it could be done on the server side.
-
       signupRequest(
         enteredFirstName,
         enteredLastName,
         enteredEmail,
-        enteredPassword,
+        enteredPassword
       );
     }
 
     // TODO: We should redirect to a /login page.
     // Let's omit sending the confirmation email.
+    // That should be done somehow with a react router.
 
     clearSubmittedDataHandler();
   }
@@ -106,7 +112,7 @@ export default function Signup() {
       <form onSubmit={handleFormSubmit}>
         <h2>Signup</h2>
         <div className="control-row">
-          <div className="control no-margin">
+          {/* <div className="control no-margin">
             <label htmlFor="email">Email </label>
             <input
               id="email"
@@ -115,7 +121,13 @@ export default function Signup() {
               onChange={handleEmailSubmit}
               value={enteredEmail}
             ></input>
-          </div>
+          </div> */}
+          <UserInput
+            title="email"
+            text="Email "
+            onSubmitHandler={handleEmailSubmit}
+            inputValue={enteredEmail}
+          />
           <div className="control no-margin">
             <label htmlFor="password">Password </label>
             <input
