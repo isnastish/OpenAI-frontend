@@ -28,17 +28,14 @@ export default function Login() {
           password: enteredPassword,
         };
 
-        // const baseURL = new URL("http://localhost:3031/api");
-
         try {
-            // Make a request to login API endpoint
           const response = await fetch("http://localhost:3030/login", {
             method: "POST",
             body: JSON.stringify(authData),
             headers: {
               "Content-Type": "application/json",
+              "X-Forwarded-For": "34.130.107.20", // Canada IP address
             },
-            // NOTE: Credentials are not supported if Access-Control-Allow-Origin is '*'
             credentials: "include",
           });
 
@@ -57,13 +54,13 @@ export default function Login() {
           console.log("Access token: ", accessToken);
           console.log("Refresh token: ", refreshToken);
 
-          // TODO: redirect user to the starting page /
+          // TODO: Redirect to openai page, so that we can make requests 
+          // to openai.
         } catch (error) {
           // TODO: Handle other errors
           // setInvalidInputError('Failed to make a request to openaAI backend server.');
         }
       }
-
       authorize();
     }
   }
@@ -81,17 +78,17 @@ export default function Login() {
     setEnteredPassword("");
   }
 
-  function handleLogout(event) {
+  function handleLogout() {
     async function logout() {
-      const response = await fetch("http://localhost:3031/api/logout", {
-        method: "GET",
-        // NOTE: Credentials header has to be included or we won't get our header back
-        credentials: "include",
-      });
+      try {
+        const response = await fetch("http://localhost:3030/logout", {
+          method: "GET",
+          credentials: "include",
+        });
+      } catch (error) {}
     }
 
     logout();
-
     setJwtAccessToken("");
   }
 
@@ -108,11 +105,6 @@ export default function Login() {
         ></Error>
       </Fragment>
     );
-  }
-
-  // NOTE: For debugging only
-  if (jwtAccessToken !== "") {
-    console.log("JWT access token was set!");
   }
 
   return (

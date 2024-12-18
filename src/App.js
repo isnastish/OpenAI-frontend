@@ -1,6 +1,7 @@
 import { Fragment, useEffect, useReducer, useState } from "react";
 import Error from "./components/Error";
 import Login from "./components/Login";
+import Signup from "./components/Signup";
 
 function CustomCounter() {
   const [count, setCount] = useState(0);
@@ -87,7 +88,8 @@ export default function App() {
   return (
     <Fragment>
       <div className="App">
-        <Login></Login>
+        <Signup></Signup>
+        {/* <Login></Login> */}
       </div>
     </Fragment>
   );
