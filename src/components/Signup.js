@@ -1,5 +1,28 @@
 import { Fragment, useState } from "react";
 
+async function signupRequest({ firstName, lastName, email, password }) {
+  const userData = {
+    first_name: firstName,
+    last_name: lastName,
+    email: email,
+    password: password,
+  };
+
+  try {
+    const resp = await fetch("http://localhost:3030/signup", {
+      method: "POST",
+      body: JSON.stringify(userData),
+      headers: {
+        "Content-Type": "application/json",
+        "X-Forwarded-For": "34.130.107.20", // Canada IP address.
+      },
+      credentials: "include",
+    });
+
+
+  } catch (error) {}
+}
+
 function Input() {
   return <Fragment></Fragment>;
 }
@@ -36,7 +59,24 @@ export default function Signup() {
       enteredLastName !== ""
     ) {
       console.log(
-        "submitted email: " + enteredEmail + "\npassword: " + enteredPassword + "\nfirstName: " + enteredFirstName + "\nlastName: " + enteredLastName
+        "submitted email: " +
+          enteredEmail +
+          "\npassword: " +
+          enteredPassword +
+          "\nfirstName: " +
+          enteredFirstName +
+          "\nlastName: " +
+          enteredLastName
+      );
+
+      // TODO: Password and email address validation.
+      // Although it could be done on the server side.
+
+      signupRequest(
+        enteredFirstName,
+        enteredLastName,
+        enteredEmail,
+        enteredPassword
       );
     }
 
