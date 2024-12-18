@@ -1,4 +1,5 @@
 import { Fragment, useState } from "react";
+import { UserInput } from "./Input";
 
 async function signupRequest(firstName, lastName, email, password) {
   const userData = {
@@ -37,25 +38,6 @@ async function signupRequest(firstName, lastName, email, password) {
     // But I don't know how to propagate data between functions in react.
     console.error(error);
   }
-}
-
-function UserInput({ title, text, onSubmitHandler, inputValue }) {
-  if (typeof onSubmitHandler !== "function") {
-    throw new Error("invalid type for submit handler");
-  }
-
-  return (
-    <div className="control no-margin">
-      <label htmlFor={title}>{text}</label>
-      <input
-        id={title}
-        type={title}
-        name={title}
-        onChange={onSubmitHandler}
-        value={inputValue}
-      ></input>
-    </div>
-  );
 }
 
 export default function Signup() {

@@ -1,62 +1,57 @@
 import { Fragment, useState } from "react";
-import Error from "./Error";
-
-async function makeLoginRequest(userEmail, userPassword) {
-  // NOTE: How do we set jwtAccessToken back? 
-  // As a return value?
-} 
+import { UserInput } from "./Input";
 
 export default function Login() {
   const [enteredEmail, setEnteredEmail] = useState("");
   const [enteredPassword, setEnteredPassword] = useState("");
-  const [invalidInputError, setInvalidInputError] = useState("");
   const [jwtAccessToken, setJwtAccessToken] = useState("");
 
   function handleSubmit(event) {
     event.preventDefault();
 
     if (enteredEmail !== "" && enteredPassword !== "") {
-
-      async function authorize() {
+      async function makeLoginRequest() {
         const authData = {
           email: enteredEmail,
           password: enteredPassword,
         };
 
         try {
-          const response = await fetch("http://localhost:3030/login", {
+          const resp = await fetch("http://localhost:3030/login", {
             method: "POST",
             body: JSON.stringify(authData),
             headers: {
               "Content-Type": "application/json",
-              "X-Forwarded-For": "34.130.107.20", // Canada IP address
             },
             credentials: "include",
           });
 
-          if (response.status !== 200) {
-            throw new Error(
-              `Request failed with status: ${response.status}, error: ${response.text}`
-            );
+          if (!resp.ok) {
+            if (resp.status === 500) {
+              // Internal server error.
+              console.log("Server internal error");
+              throw new Error(await resp.text());
+            }
+            throw new Error(resp.status);
           }
 
-          const respData = await response.json();
-          const accessToken = respData.access_token;
-          const refreshToken = respData.refresh_token;
-
-          setJwtAccessToken(accessToken);
+          const body = await resp.json();
+          const accessToken = body.access_token;
+          const refreshToken = body.refresh_token;
 
           console.log("Access token: ", accessToken);
           console.log("Refresh token: ", refreshToken);
 
-          // TODO: Redirect to openai page, so that we can make requests 
-          // to openai.
+          setJwtAccessToken(accessToken);
+
+          // TODO: What do we do with refresh token?
+          // That would be part of a cookie, so we don't have to worry about that.
         } catch (error) {
-          // TODO: Handle other errors
-          // setInvalidInputError('Failed to make a request to openaAI backend server.');
+          console.error(error);
         }
       }
-      authorize();
+
+      makeLoginRequest();
     }
   }
 
@@ -68,77 +63,26 @@ export default function Login() {
     setEnteredPassword(event.target.value);
   }
 
-  function handleReset(event) {
-    setEnteredEmail("");
-    setEnteredPassword("");
-  }
-
-  function handleLogout() {
-    async function logout() {
-      try {
-        const response = await fetch("http://localhost:3030/logout", {
-          method: "GET",
-          credentials: "include",
-        });
-      } catch (error) {}
-    }
-
-    logout();
-    setJwtAccessToken("");
-  }
-
-  // Invalid input component
-  if (invalidInputError) {
-    return (
-      <Fragment>
-        <Error
-          title="An error occured"
-          message={invalidInputError}
-          onConfirm={() => {
-            setInvalidInputError("");
-          }}
-        ></Error>
-      </Fragment>
-    );
-  }
-
   return (
     <Fragment>
-      {/* the browser refreshes the page when a form is submitted*/}
       <form onSubmit={handleSubmit}>
         <h2>Login</h2>
         <div className="control-row">
-          <div className="control no-margin">
-            <label htmlFor="email">Email: </label>
-            <input
-              id="email"
-              type="email"
-              name="email"
-              onChange={handleEmailSubmit}
-              value={enteredEmail}
-            />
-          </div>
-
-          <div className="control no-margin">
-            <label htmlFor="password">Password: </label>
-            <input
-              id="password"
-              type="password"
-              name="password"
-              onChange={handlePasswordSubmit}
-              value={enteredPassword}
-            />
-          </div>
+          <UserInput
+            title="email"
+            text="Email "
+            onSubmitHandler={handleEmailSubmit}
+            inputValue={enteredEmail}
+          />
+          <UserInput
+            title="password"
+            text="Password "
+            onSubmitHandler={handlePasswordSubmit}
+            inputValue={enteredPassword}
+          />
         </div>
-
         <p className="form-actions">
-          <button className="button button-flat" onClick={handleReset}>
-            Reset
-          </button>
           <button className="button">Login</button>
-          <button className="button" onClick={handleLogout}>
-            Logout
-          </button>
         </p>
       </form>
     </Fragment>
