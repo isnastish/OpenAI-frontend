@@ -1,5 +1,4 @@
 import { Fragment, useState } from "react";
-import { UserInput } from "./Input";
 
 export default function Login() {
   const [enteredEmail, setEnteredEmail] = useState("");
