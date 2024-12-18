@@ -39,7 +39,7 @@ async function signupRequest(firstName, lastName, email, password) {
   }
 }
 
-function UserInput(title, text, onSubmitHandler, inputValue) {
+function UserInput({ title, text, onSubmitHandler, inputValue }) {
   if (typeof onSubmitHandler !== "function") {
     throw new Error("invalid type for submit handler");
   }
@@ -104,60 +104,35 @@ export default function Signup() {
     clearSubmittedDataHandler();
   }
 
-  // TODO: There is some repetition with an input,
-  // it has to be moved out into a separte component.
-
   return (
     <Fragment>
       <form onSubmit={handleFormSubmit}>
         <h2>Signup</h2>
         <div className="control-row">
-          {/* <div className="control no-margin">
-            <label htmlFor="email">Email </label>
-            <input
-              id="email"
-              type="email"
-              name="email"
-              onChange={handleEmailSubmit}
-              value={enteredEmail}
-            ></input>
-          </div> */}
           <UserInput
             title="email"
             text="Email "
             onSubmitHandler={handleEmailSubmit}
             inputValue={enteredEmail}
           />
-          <div className="control no-margin">
-            <label htmlFor="password">Password </label>
-            <input
-              id="password"
-              type="password"
-              name="password"
-              onChange={handlePasswordSubmit}
-              value={enteredPassword}
-            ></input>
-          </div>
-          <div className="control no-margin">
-            <label htmlFor="password">FirstName </label>
-            <input
-              id="first-name"
-              type="first-name"
-              name="first-name"
-              onChange={firstNameSubmitHandler}
-              value={enteredFirstName}
-            ></input>
-          </div>
-          <div className="control no-margin">
-            <label htmlFor="password">LastName </label>
-            <input
-              id="last-name"
-              type="last-name"
-              name="last-name"
-              onChange={lastNameSubmitHandler}
-              value={enteredLastName}
-            ></input>
-          </div>
+          <UserInput
+            title="password"
+            text="Password "
+            onSubmitHandler={handlePasswordSubmit}
+            inputValue={enteredPassword}
+          />
+          <UserInput
+            title="first-name"
+            text="First Name "
+            onSubmitHandler={firstNameSubmitHandler}
+            inputValue={enteredFirstName}
+          />
+          <UserInput
+            title="last-name"
+            text="Last Name "
+            onSubmitHandler={lastNameSubmitHandler}
+            inputValue={enteredLastName}
+          />
         </div>
         <p className="form-actions">
           <button className="button">SignUp</button>
