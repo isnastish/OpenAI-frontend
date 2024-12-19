@@ -1,4 +1,5 @@
 import { Fragment, useState } from "react";
+import { UserInput } from "./Input";
 
 export default function Login() {
   const [enteredEmail, setEnteredEmail] = useState("");
@@ -54,13 +55,10 @@ export default function Login() {
     }
   }
 
-  function handleEmailSubmit(event) {
-    setEnteredEmail(event.target.value);
-  }
+  const emailSubmitHandler = (event) => setEnteredEmail(event.target.value);
 
-  function handlePasswordSubmit(event) {
-    setEnteredPassword(event.target.value);
-  }
+  const passwordSubmitHandler = (event) =>
+    setEnteredPassword(event.taget.value);
 
   return (
     <Fragment>
@@ -70,13 +68,13 @@ export default function Login() {
           <UserInput
             title="email"
             text="Email "
-            onSubmitHandler={handleEmailSubmit}
+            onSubmitHandler={emailSubmitHandler}
             inputValue={enteredEmail}
           />
           <UserInput
             title="password"
             text="Password "
-            onSubmitHandler={handlePasswordSubmit}
+            onSubmitHandler={passwordSubmitHandler}
             inputValue={enteredPassword}
           />
         </div>
