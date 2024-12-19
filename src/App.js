@@ -1,24 +1,14 @@
 import { Fragment, useState } from "react";
 import Signup from "./components/Signup";
 import Login from "./components/Login";
+import Openai from "./components/Openai";
 
 export default function App() {
-  const renderStates = ["signup", "login", "openai"];
-
   const [signupState, setSignupState] = useState(true);
+  const [openaiState, setOpenaiState] = useState(false);
 
-  const signupStateUpdateHandler = () => {
-    console.log(
-      "signupStateUpdateHandler() was invoked, signupState: " + signupState
-    );
-    if (signupState) {
-      // Switch to login state.
-      setSignupState(false);
-      return;
-    }
-  };
-
-  console.log("APP COMPONENT RENDERING");
+  const signupStateUpdateHandler = () => setSignupState(false);
+  const openaiUpdateHandler = () => setOpenaiState(true);
 
   // NOTE: Once we logged in successfully, the user should be redirected
   // to openai page (not really for now) where he can ask questions to chat gpt model,
@@ -30,7 +20,13 @@ export default function App() {
         {signupState ? (
           <Signup signupStateUpdateHandler={signupStateUpdateHandler}></Signup>
         ) : (
-          <Login />
+          <>
+            {openaiState ? (
+              <Openai />
+            ) : (
+              <Login openaiUpdateHandler={openaiUpdateHandler} />
+            )}
+          </>
         )}
       </div>
     </Fragment>

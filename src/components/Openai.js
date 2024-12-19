@@ -1,9 +1,6 @@
 import { Fragment, useState } from "react";
 import { UserInput } from "./Input";
 
-// NOTE: This function should probably return a response, 
-// so we can process it later.
-// But, 
 async function makeOpenAIRequest(message, jwtAccessToken) {
   // NOTE: Since this is a protected route on the back-end side,
   // we have to include the authorization header with a JWT token.
@@ -25,9 +22,7 @@ async function makeOpenAIRequest(message, jwtAccessToken) {
         throw new Error(await resp.text());
       }
 
-      throw new Error(
-        `Failed to fetch the data: ${response.status}, ${response.status}`
-      );
+      throw new Error(resp.status);
     }
 
     // return await response.json();
