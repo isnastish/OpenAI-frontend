@@ -1,13 +1,12 @@
 import { Fragment, useState } from "react";
 import { UserInput } from "./Input";
 
-export default function Login({openaiUpdateHandler}) {
+export default function Login({ openaiUpdateHandler, jwtTokenHandler }) {
   // NOTE: When calling one of set state functions,
   // we're telling react that the outer component has to be rerendered.
 
   const [enteredEmail, setEnteredEmail] = useState("");
   const [enteredPassword, setEnteredPassword] = useState("");
-  const [jwtAccessToken, setJwtAccessToken] = useState("");
 
   function handleSubmit(event) {
     event.preventDefault();
@@ -44,8 +43,7 @@ export default function Login({openaiUpdateHandler}) {
           console.log("Access token: ", accessToken);
           console.log("Refresh token: ", refreshToken);
 
-          setJwtAccessToken(accessToken);
-
+          jwtTokenHandler(accessToken);
           openaiUpdateHandler();
 
           // TODO: What do we do with refresh token?

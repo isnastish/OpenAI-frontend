@@ -5,23 +5,23 @@ async function makeOpenAIRequest(message, jwtAccessToken) {
   // NOTE: Since this is a protected route on the back-end side,
   // we have to include the authorization header with a JWT token.
   // Not refresh token, I suppose.
-  try {
-    const headers = new Headers()
-      .append("Content-Type", "application/json")
-      .append("authorization", "Bearer " + jwtAccessToken);
+  console.log("Bearer " + jwtAccessToken);
 
-    const resp = await fetch("http://localhost:3030/openai", {
+  try {
+    const resp = await fetch("http://localhost:3030/protected/openai", {
       method: "POST",
       body: JSON.stringify({ "openai-question": message }),
-      headers: headers,
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + jwtAccessToken,
+      },
       credentials: "include",
     });
 
     if (!resp.ok) {
-      if (resp.status === 500) {
+      if (resp.status === 500 || resp.status === 401) {
         throw new Error(await resp.text());
       }
-
       throw new Error(resp.status);
     }
 
@@ -39,20 +39,25 @@ export default function Openai({ jwtAccessToken }) {
     setOpenaiMessage(event.target.value);
   };
 
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    makeOpenAIRequest(openaiMessage, jwtAccessToken);
+  };
+
   return (
     <Fragment>
-      <div className="control-row"></div>
-      <UserInput
-        title="openai"
-        text="Openai question "
-        onSubmitHandler={openaiMessageUpdateHandler}
-        inputValue={openaiMessage}
-      />
-      <p className="form-actions">
-        <button className="button" onClick={makeOpenAIRequest}>
-          Send
-        </button>
-      </p>
+      <form onSubmit={handleSubmit}>
+        <div className="control-row"></div>
+        <UserInput
+          title="openai"
+          text="Openai question "
+          onSubmitHandler={openaiMessageUpdateHandler}
+          inputValue={openaiMessage}
+        />
+        <p className="form-actions">
+          <button className="button">Send</button>
+        </p>
+      </form>
     </Fragment>
   );
 }
