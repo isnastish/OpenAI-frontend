@@ -1,50 +1,18 @@
 import { Fragment, useState } from "react";
 import Signup from "./components/Signup";
 import Login from "./components/Login";
-
-// async function fetchOpenAIData(message) {
-//   try {
-//     const jwtToken = "";
-//     const headers = new Headers();
-//     headers.append("Content-Type", "application/json");
-//     headers.append("authorization", "Bearer " + jwtToken);
-
-//     const response = await fetch("http://localhost:3030/openai", {
-//       method: "PUT",
-//       body: JSON.stringify({ "openai-question": message }),
-//       headers: headers,
-//       // NOTE: This is critical, because otherwise cookie won't be included
-//       credentials: "include",
-//     });
-
-//     if (!response.ok) {
-//       throw new Error(
-//         `Failed to fetch the data: ${response.status}, ${response.status}`
-//       );
-//     }
-
-//     const respData = await response.json();
-//     console.log(respData.openai);
-//   } catch (error) {
-//     // In case error.message is not present, we add our default message
-//     setError({
-//       message:
-//         error.message || "Failed to make a request to openaAI backend server.",
-//     });
-//   }
-// }
+import Openai from "./components/Openai";
 
 export default function App() {
   const [signupState, setSignupState] = useState(true);
+  const [openaiState, setOpenaiState] = useState(false);
 
-  const signupStateUpdateHandler = () => {
-    console.log("signupStateUpdateHandler() was invoked, signupState: " + signupState);
-    if (signupState) {
-      // Switch to login state.
-      setSignupState(false);
-      return;
-    }
-  };
+  const signupStateUpdateHandler = () => setSignupState(false);
+  const openaiUpdateHandler = () => setOpenaiState(true);
+
+  // NOTE: Once we logged in successfully, the user should be redirected
+  // to openai page (not really for now) where he can ask questions to chat gpt model,
+  // and receive questions (not via the console).
 
   return (
     <Fragment>
@@ -52,7 +20,13 @@ export default function App() {
         {signupState ? (
           <Signup signupStateUpdateHandler={signupStateUpdateHandler}></Signup>
         ) : (
-          <Login />
+          <>
+            {openaiState ? (
+              <Openai />
+            ) : (
+              <Login openaiUpdateHandler={openaiUpdateHandler} />
+            )}
+          </>
         )}
       </div>
     </Fragment>

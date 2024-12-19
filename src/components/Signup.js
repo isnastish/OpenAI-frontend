@@ -1,7 +1,17 @@
 import { Fragment, useState } from "react";
 import { UserInput } from "./Input";
 
-async function signupRequest(firstName, lastName, email, password) {
+async function signupRequest(
+  firstName,
+  lastName,
+  email,
+  password,
+  onSignupHandler
+) {
+  if (typeof onSignupHandler !== "function") {
+    throw new Error("invalid type for on signup handler, function is expected");
+  }
+
   const userData = {
     first_name: firstName,
     last_name: lastName,
@@ -27,6 +37,8 @@ async function signupRequest(firstName, lastName, email, password) {
 
       throw new Error(resp.status);
     }
+
+    onSignupHandler();
 
     // TODO: Redirect to /login page.
     // And once the user is logen in, we should validate its data
@@ -75,13 +87,9 @@ export default function Signup({ signupStateUpdateHandler }) {
         enteredFirstName,
         enteredLastName,
         enteredEmail,
-        enteredPassword
+        enteredPassword,
+        signupStateUpdateHandler
       );
-
-      // NOTE: This only should be invoked when the 
-      // signup process was successfull, we didn't throw any errors.
-      // So, it should be moved inside signupRequest function.
-      signupStateUpdateHandler();
     }
 
     // TODO: We should redirect to a /login page.
