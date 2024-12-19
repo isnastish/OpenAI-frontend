@@ -6,14 +6,13 @@ async function makeOpenAIRequest(message, jwtAccessToken) {
   // we have to include the authorization header with a JWT token.
   // Not refresh token, I suppose.
   try {
-    const headers = new Headers()
-      .append("Content-Type", "application/json")
-      .append("authorization", "Bearer " + jwtAccessToken);
-
-    const resp = await fetch("http://localhost:3030/openai", {
+    const resp = await fetch("http://localhost:3030/protected/openai", {
       method: "POST",
       body: JSON.stringify({ "openai-question": message }),
-      headers: headers,
+      headers: {
+        "Content-Type": "application/json",
+        authorization: "Bearer " + jwtAccessToken,
+      },
       credentials: "include",
     });
 
@@ -39,20 +38,25 @@ export default function Openai({ jwtAccessToken }) {
     setOpenaiMessage(event.target.value);
   };
 
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    makeOpenAIRequest(openaiMessage, jwtAccessToken);
+  };
+
   return (
     <Fragment>
-      <div className="control-row"></div>
-      <UserInput
-        title="openai"
-        text="Openai question "
-        onSubmitHandler={openaiMessageUpdateHandler}
-        inputValue={openaiMessage}
-      />
-      <p className="form-actions">
-        <button className="button" onClick={makeOpenAIRequest}>
-          Send
-        </button>
-      </p>
+      <form onSubmit={handleSubmit}>
+        <div className="control-row"></div>
+        <UserInput
+          title="openai"
+          text="Openai question "
+          onSubmitHandler={openaiMessageUpdateHandler}
+          inputValue={openaiMessage}
+        />
+        <p className="form-actions">
+          <button className="button">Send</button>
+        </p>
+      </form>
     </Fragment>
   );
 }
